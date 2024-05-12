@@ -16,6 +16,7 @@ type CommentRepository interface {
 	InsertOne(comment domain.Comment) (string, error)
 	InsertMany(comments []domain.Comment) ([]string, error)
 	UpdateOne(id string, filed UpdateFiled) error
+	UpdateMany(cond FindCondition, filed UpdateFiled) error
 }
 
 type FindCondition struct {

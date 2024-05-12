@@ -184,6 +184,44 @@ func (c *commentRepository) UpdateOne(id string, filed repository.UpdateFiled) e
 	return nil
 }
 
+func (c *commentRepository) UpdateMany(cond repository.FindCondition, filed repository.UpdateFiled) error {
+	fil := c.convertFilter(cond)
+
+	update := bson.M{
+		"$set": bson.M{},
+	}
+	if filed.Name != nil {
+		update["$set"].(bson.M)["name"] = *filed.Name
+	}
+	if filed.Email != nil {
+		update["$set"].(bson.M)["email"] = *filed.Email
+	}
+	if filed.MovieID != nil {
+		_movieID, err := primitive.ObjectIDFromHex(*filed.MovieID)
+		if err != nil {
+			return fmt.Errorf("failed to convert movieID: %w", err)
+		}
+		update["$set"].(bson.M)["movie_id"] = _movieID
+	}
+	if filed.Text != nil {
+		update["$set"].(bson.M)["text"] = *filed.Text
+	}
+	if filed.Date != nil {
+		update["$set"].(bson.M)["date"] = *filed.Date
+	}
+
+	out, err := c.coll().UpdateMany(context.TODO(), fil, update)
+	if err != nil {
+		return fmt.Errorf("error in update many %v", err)
+	}
+	if out.MatchedCount == 0 {
+		return fmt.Errorf("no matched document")
+	}
+	fmt.Printf("matched count: %d, modified count: %d, upserted count: %d\n", out.MatchedCount, out.ModifiedCount, out.UpsertedCount)
+
+	return nil
+}
+
 func (c *commentRepository) convertFilter(findCondition repository.FindCondition) bson.M {
 	fil := bson.M{}
 	if findCondition.ID != nil {
