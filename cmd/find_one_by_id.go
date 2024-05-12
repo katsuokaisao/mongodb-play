@@ -12,7 +12,7 @@ var findOneByIDCmd = &cobra.Command{
 	Short: "Find one comment by ID",
 	Run: func(cmd *cobra.Command, args []string) {
 		commentRepository := initMongoDB()
-		_id := "5a9427648b0beebeb6957a21"
+		_id := "664020b5bef7a3d5e852e6c1"
 		fmt.Printf("Find by ID: %s\n", _id)
 		comment, err := commentRepository.FindOneByID(_id)
 		if err != nil {

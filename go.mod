@@ -3,6 +3,7 @@ module github.com/katsuokaisao/mongodb-play
 go 1.20
 
 require (
+	github.com/AlekSi/pointer v1.2.0
 	github.com/joho/godotenv v1.5.1
 	github.com/spf13/cobra v1.8.0
 	go.mongodb.org/mongo-driver v1.15.0

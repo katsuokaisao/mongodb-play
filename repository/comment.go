@@ -15,7 +15,7 @@ type CommentRepository interface {
 	Find(query FindCondition) ([]domain.Comment, error)
 	InsertOne(comment domain.Comment) (string, error)
 	InsertMany(comments []domain.Comment) ([]string, error)
-	UpdateOne(id string, comment *domain.Comment) error
+	UpdateOne(id string, filed UpdateFiled) error
 }
 
 type FindCondition struct {
@@ -33,6 +33,14 @@ type Comment struct {
 	MovieID primitive.ObjectID `bson:"movie_id"`
 	Text    string             `bson:"text"`
 	Date    time.Time          `bson:"date"`
+}
+
+type UpdateFiled struct {
+	Name    *string
+	Email   *string
+	MovieID *string
+	Text    *string
+	Date    *time.Time
 }
 
 func (c *Comment) ToDomain() domain.Comment {

@@ -142,12 +142,7 @@ func (c *commentRepository) InsertMany(comments []domain.Comment) ([]string, err
 	return ids, nil
 }
 
-func (c *commentRepository) UpdateOne(id string, comment *domain.Comment) error {
-	com, err := repository.FromDomain(comment)
-	if err != nil {
-		return fmt.Errorf("failed to convert domain to repository: %w", err)
-	}
-
+func (c *commentRepository) UpdateOne(id string, filed repository.UpdateFiled) error {
 	_id, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return fmt.Errorf("failed to convert id: %w", err)
@@ -155,13 +150,26 @@ func (c *commentRepository) UpdateOne(id string, comment *domain.Comment) error 
 	fil := bson.M{"_id": bson.M{"$eq": _id}}
 
 	update := bson.M{
-		"$set": bson.M{
-			"name":     com.Name,
-			"email":    com.Email,
-			"movie_id": com.MovieID,
-			"text":     com.Text,
-			"date":     com.Date,
-		},
+		"$set": bson.M{},
+	}
+	if filed.Name != nil {
+		update["$set"].(bson.M)["name"] = *filed.Name
+	}
+	if filed.Email != nil {
+		update["$set"].(bson.M)["email"] = *filed.Email
+	}
+	if filed.MovieID != nil {
+		_movieID, err := primitive.ObjectIDFromHex(*filed.MovieID)
+		if err != nil {
+			return fmt.Errorf("failed to convert movieID: %w", err)
+		}
+		update["$set"].(bson.M)["movie_id"] = _movieID
+	}
+	if filed.Text != nil {
+		update["$set"].(bson.M)["text"] = *filed.Text
+	}
+	if filed.Date != nil {
+		update["$set"].(bson.M)["date"] = *filed.Date
 	}
 
 	out, err := c.coll().UpdateOne(context.TODO(), fil, update)

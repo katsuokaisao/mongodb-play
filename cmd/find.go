@@ -15,8 +15,6 @@ var findCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		commentRepository := initMongoDB()
 
-		name := "Jaqen H'ghar"
-
 		start := "1973-07-26T00:00:00Z"
 		st, err := time.Parse(time.RFC3339, start)
 		if err != nil {
@@ -30,7 +28,6 @@ var findCmd = &cobra.Command{
 		fmt.Printf("Find by date range: %s ~ %s\n", start, end)
 
 		condition := repository.FindCondition{
-			Name:  &name,
 			Start: &st,
 			End:   &ed,
 		}

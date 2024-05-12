@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -44,11 +43,6 @@ func initMongoDB() repository.CommentRepository {
 	if err != nil {
 		log.Fatalf("failed to connect to MongoDB: %v", err)
 	}
-	defer func() {
-		if err := cli.Disconnect(context.Background()); err != nil {
-			log.Fatalf("failed to disconnect from MongoDB: %v", err)
-		}
-	}()
 
 	commentRepository := mongodb.NewCommentRepository(cli)
 
