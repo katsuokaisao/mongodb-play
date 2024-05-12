@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/katsuokaisao/mongodb-play/domain"
@@ -19,6 +20,7 @@ type CommentRepository interface {
 	UpdateMany(cond FindCondition, filed UpdateFiled) error
 	DeleteOne(id string) error
 	DeleteMany(cond FindCondition) error
+	ReplaceOne(id string, comment domain.Comment) error
 }
 
 type FindCondition struct {
@@ -63,8 +65,16 @@ func FromDomain(comment *domain.Comment) (Comment, error) {
 		return Comment{}, err
 	}
 
+	id := primitive.NewObjectID()
+	if comment.ID != "" {
+		id, err = primitive.ObjectIDFromHex(comment.ID)
+		if err != nil {
+			return Comment{}, fmt.Errorf("failed to convert ID: %w", err)
+		}
+	}
+
 	return Comment{
-		ID:      primitive.NewObjectID(),
+		ID:      id,
 		Name:    comment.Name,
 		Email:   comment.Email,
 		MovieID: movieID,

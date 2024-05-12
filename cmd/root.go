@@ -24,6 +24,7 @@ func init() {
 	rootCmd.AddCommand(updateManyCmd)
 	rootCmd.AddCommand(deleteOneCmd)
 	rootCmd.AddCommand(deleteManyCmd)
+	rootCmd.AddCommand(replaceOneCmd)
 }
 
 var rootCmd = &cobra.Command{}

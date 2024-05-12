@@ -254,6 +254,30 @@ func (c *commentRepository) DeleteMany(cond repository.FindCondition) error {
 	return nil
 }
 
+func (c *commentRepository) ReplaceOne(id string, comment domain.Comment) error {
+	_id, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return fmt.Errorf("failed to convert id: %w", err)
+	}
+	fil := bson.M{"_id": bson.M{"$eq": _id}}
+
+	com, err := repository.FromDomain(&comment)
+	if err != nil {
+		return fmt.Errorf("failed to convert domain to repository: %w", err)
+	}
+
+	out, err := c.coll().ReplaceOne(context.TODO(), fil, com)
+	if err != nil {
+		return fmt.Errorf("error in replace one %v", err)
+	}
+	if out.MatchedCount == 0 {
+		return fmt.Errorf("no matched document")
+	}
+	fmt.Printf("matched count: %d, modified count: %d, upserted count: %d\n", out.MatchedCount, out.ModifiedCount, out.UpsertedCount)
+
+	return nil
+}
+
 
 func (c *commentRepository) convertFilter(findCondition repository.FindCondition) bson.M {
 	fil := bson.M{}
