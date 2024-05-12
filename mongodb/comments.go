@@ -222,6 +222,39 @@ func (c *commentRepository) UpdateMany(cond repository.FindCondition, filed repo
 	return nil
 }
 
+func (c *commentRepository) DeleteOne(id string) error {
+	_id, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return fmt.Errorf("failed to convert id: %w", err)
+	}
+	fil := bson.M{"_id": bson.M{"$eq": _id}}
+
+	out, err := c.coll().DeleteOne(context.TODO(), fil)
+	if err != nil {
+		return fmt.Errorf("error in delete one %v", err)
+	}
+	if out.DeletedCount == 0 {
+		return fmt.Errorf("no matched document")
+	}
+	fmt.Printf("deleted count: %d\n", out.DeletedCount)
+	return nil
+}
+
+func (c *commentRepository) DeleteMany(cond repository.FindCondition) error {
+	fil := c.convertFilter(cond)
+
+	out, err := c.coll().DeleteMany(context.TODO(), fil)
+	if err != nil {
+		return fmt.Errorf("error in delete many %v", err)
+	}
+	if out.DeletedCount == 0 {
+		return fmt.Errorf("no matched document")
+	}
+	fmt.Printf("deleted count: %d\n", out.DeletedCount)
+	return nil
+}
+
+
 func (c *commentRepository) convertFilter(findCondition repository.FindCondition) bson.M {
 	fil := bson.M{}
 	if findCondition.ID != nil {
