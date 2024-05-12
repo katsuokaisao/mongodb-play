@@ -278,6 +278,13 @@ func (c *commentRepository) ReplaceOne(id string, comment domain.Comment) error 
 	return nil
 }
 
+func (c *commentRepository) EstimatedDocumentCount() (int64, error) {
+	count, err := c.coll().EstimatedDocumentCount(context.TODO())
+	if err != nil {
+		return 0, fmt.Errorf("failed to get estimated document count: %w", err)
+	}
+	return count, nil
+}
 
 func (c *commentRepository) convertFilter(findCondition repository.FindCondition) bson.M {
 	fil := bson.M{}

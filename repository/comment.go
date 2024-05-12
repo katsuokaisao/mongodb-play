@@ -21,6 +21,7 @@ type CommentRepository interface {
 	DeleteOne(id string) error
 	DeleteMany(cond FindCondition) error
 	ReplaceOne(id string, comment domain.Comment) error
+	EstimatedDocumentCount() (int64, error)
 }
 
 type FindCondition struct {

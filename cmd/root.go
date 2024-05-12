@@ -25,6 +25,7 @@ func init() {
 	rootCmd.AddCommand(deleteOneCmd)
 	rootCmd.AddCommand(deleteManyCmd)
 	rootCmd.AddCommand(replaceOneCmd)
+	rootCmd.AddCommand(estimatedDocumentCountCmd)
 }
 
 var rootCmd = &cobra.Command{}
